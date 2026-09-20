@@ -32,6 +32,12 @@ const devOrigins =
         'http://127.0.0.1:3001',
       ];
 const allowedOrigins = new Set([...(envOrigins.length ? envOrigins : ['http://localhost:3000']), ...devOrigins]);
+// Native-app (Capacitor APK) origins. The Android WebView serves the app from
+// https://localhost, so the backend must allow it or every API call from the
+// installed app is blocked by CORS and the app shows no products. These are
+// loopback-only origins (can only come from the user's own device), safe to
+// allow in every environment including production.
+for (const o of ['https://localhost', 'http://localhost', 'capacitor://localhost']) allowedOrigins.add(o);
 app.use(
   cors({
     origin: (origin, cb) => {
